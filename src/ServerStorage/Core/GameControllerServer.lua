@@ -71,20 +71,24 @@ function Module.SetupGameFromConfig( config : { Difficulty : string } )
 	Module.Ready = true
 end
 
+function Module.RunGame()
+	SystemsContainer.WavesServer.IterateWaves()
+	SystemsContainer.EnemiesServer.ClearSpawnQueue()
+	-- SystemsContainer.EnemiesServer.KillAllEnemies()
+	if HitpointsValue.Value <= 0 then
+		-- dead
+		warn('You have Died - Game Over!')
+	else
+		-- alive
+		warn('You have Won - Game Over!')
+	end
+end
+
 function Module.Start()
 
 	task.spawn(function()
 		Module.SetupGameFromConfig({ Difficulty = 'Normal', })
-		SystemsContainer.WavesServer.IterateWaves()
-		SystemsContainer.EnemiesServer.ClearSpawnQueue()
-		SystemsContainer.EnemiesServer.KillAllEnemies()
-		if HitpointsValue.Value <= 0 then
-			-- dead
-			warn('You have died - game over!')
-		else
-			-- alive
-			warn('You have won - game over!')
-		end
+		Module.RunGame()
 	end)
 
 end
