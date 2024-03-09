@@ -1,7 +1,8 @@
 
 local ServerStorage = game:GetService("ServerStorage")
-local ServerModules = require(ServerStorage:WaitForChild("Modules"))
+local ServerAssets = ServerStorage:WaitForChild('Assets')
 
+local ServerModules = require(ServerStorage:WaitForChild("Modules"))
 local WavesConfigModule = ServerModules.Data.WavesConfig
 
 local SystemsContainer = {}
@@ -37,8 +38,14 @@ end
 function Module.LoadMap( mapId : string )
 	Module.ClearMap() -- clears the current map if found
 
+	local Model = ServerAssets.Maps:FindFirstChild(mapId)
+	assert( Model, 'Map Model does not exist: ' .. tostring(mapId) )
+
+	Model = Model:Clone()
+	Model.Parent = workspace.Map
+
 	Module.CurrentMapID = mapId
-	Module.CurrentMapInstance = workspace.Map0 -- temporary
+	Module.CurrentMapInstance = Model
 end
 
 function Module.Start()
