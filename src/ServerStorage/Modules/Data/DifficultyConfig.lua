@@ -1,5 +1,4 @@
 
--- // Module // --
 local Module = {}
 
 Module.Difficulties = {
@@ -37,5 +36,9 @@ Module.Difficulties = {
 	},
 
 }
+
+function Module.GetConfigFromId( id : string ) : {}?
+	return Module.Difficulties[id]
+end
 
 return Module

@@ -1,11 +1,14 @@
 
 export type EnemyConfig = {
-	Health : number,
-	Damage : number,
-	Speed : number,
+	Model : string,
+	MaxHealth : number,
+	WalkSpeed : number,
 
+	Damage : number,
 	CurrencyDrop : number,
-	HitpointsDrop : number
+	HitpointsDrop : number,
+
+	ModelScale : number,
 }
 
 -- // Module // --
@@ -14,12 +17,15 @@ local Module = {}
 Module.Enemies = {
 
 	DefaultRig = {
-		Health = 5,
-		Damage = 1,
-		Speed = 4,
+		Model = 'TemplateRig',
+		MaxHealth = 5,
+		WalkSpeed = 16,
 
+		Damage = 1,
 		CurrencyDrop = 2,
 		HitpointsDrop = 0,
+
+		ModelScale = 0.5,
 	},
 
 }

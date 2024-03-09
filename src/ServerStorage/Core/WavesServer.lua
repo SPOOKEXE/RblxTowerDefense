@@ -1,5 +1,5 @@
 
--- handle generating waves using enemiesservice and configuration
+-- handle inserting waves into queue using enemiesservice and configuration
 
 local SystemsContainer = {}
 

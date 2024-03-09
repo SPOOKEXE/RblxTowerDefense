@@ -1,12 +1,11 @@
 
+-- // Module // --
 local Module = {}
 
-Module.Maps = {
+Module.Waves = {
 
 	Map0 = {
-
 		WaveInterval = 30,
-
 		Waves = {
 			{ -- wave 1
 
@@ -15,9 +14,12 @@ Module.Maps = {
 
 			},
 		},
-
 	},
 
 }
+
+function Module.GetConfigFromId( id : string ) : {}?
+	return Module.Waves[id]
+end
 
 return Module

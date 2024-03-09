@@ -2,7 +2,7 @@
 local RunService = game:GetService('RunService')
 
 local DEFAULT_MOVE_TO_TIMEOUT = 4
-local GOAL_DISTANCE_THREASHOLD = 3
+local GOAL_DISTANCE_THRESHOLD = 1
 
 local ACTIVE_MOVE_DATA = { }
 
@@ -22,8 +22,8 @@ local function IsDataCompleted( Data )
 	end
 
 	-- is close enough (on the horziontal plane, excluding Y value), success = true
-	local Delta = (Data.HumanoidRootPart:GetPivot().Position - Data.Position)
-	if Vector2.new( Delta.X, Delta.Z ).Magnitude < GOAL_DISTANCE_THREASHOLD then
+	local Dist = (Data.HumanoidRootPart:GetPivot().Position - Data.Position).Magnitude
+	if Dist <= GOAL_DISTANCE_THRESHOLD then
 		Data.Success = true
 		Data.Reason = 3
 		return true

@@ -6,9 +6,13 @@ local Module = {}
 
 Module.CurrentMapInstance = nil
 
-function Module.GetSpawnCFrameFromId( spawnId : string ) : CFrame?
-	warn('NotImplementedError')
-	return nil
+function Module.GetWaypointsFromId( spawnId : string ) : {BasePart}?
+	assert( Module.CurrentMapInstance, 'No map is currently selected.' )
+	local Items = Module.CurrentMapInstance.Paths[spawnId]:GetChildren()
+	table.sort(Items, function(a, b)
+		return tonumber(a.name) < tonumber(b.Name) -- ascending order (lowest to highest)
+	end)
+	return Items
 end
 
 function Module.ClearMap()
@@ -30,6 +34,8 @@ end
 
 function Module.Init(otherSystems)
 	SystemsContainer = otherSystems
+
+	Module.CurrentMapInstance = workspace.Map0 -- temporary
 end
 
 return Module
