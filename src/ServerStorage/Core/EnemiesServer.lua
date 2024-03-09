@@ -244,9 +244,9 @@ function Module.SpawnQueueUpdate()
 	end
 end
 
-function Module.AwaitForEnemyDeaths()
-	while #Module.ActiveEnemyUnits > 0 do
-		task.wait(0.1)
+function Module.KillAllEnemies()
+	for _, enemyUnit in ipairs( Module.ActiveEnemyUnits ) do
+		enemyUnit.Destroyed = true
 	end
 end
 

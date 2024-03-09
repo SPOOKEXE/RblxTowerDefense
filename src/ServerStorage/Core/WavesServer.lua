@@ -1,12 +1,5 @@
 -- handle inserting waves into queue using enemiesservice and configuration
 
-local RunService = game:GetService("RunService")
-
-local ServerStorage = game:GetService("ServerStorage")
-local ServerModules = require(ServerStorage:WaitForChild("Modules"))
-
-local WavesConfigModule = ServerModules.Data.WavesConfig
-
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ReplicatedModules = require(ReplicatedStorage:WaitForChild("Modules"))
 
@@ -14,8 +7,7 @@ local NumbersModule = ReplicatedModules.Utility.Numbers
 
 local SystemsContainer = {}
 
-local CurrentWaveIndex = 1
-local StartingGracePeriod = 30
+local GRACE_PERIOD : number = 15
 
 -- // Module // --
 local Module = {}
@@ -28,8 +20,8 @@ function Module.IterateWaves()
 	ReplicatedStorage.TotalWaves.Value = #MapWavesArray
 
 	-- grace period
-	for second = 0, StartingGracePeriod - 1 do
-		local RemainingGrace : number = (StartingGracePeriod - second)
+	for second = 0, GRACE_PERIOD - 1 do
+		local RemainingGrace : number = (GRACE_PERIOD - second)
 		ReplicatedStorage.TimerValue.Value = 'Grace Period: ' .. NumbersModule.FormatForTimer( RemainingGrace, false )
 		task.wait(1)
 	end

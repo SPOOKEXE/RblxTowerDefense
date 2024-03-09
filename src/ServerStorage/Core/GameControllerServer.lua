@@ -45,6 +45,7 @@ function Module.SetActiveDifficulty( difficulty : string )
 	local difficultyConfig = DifficultyConfigModule.GetConfigFromId(difficulty)
 	assert( difficultyConfig, 'Invalid difficulty config option: ' .. tostring(difficulty) )
 	Module.DifficultyId = difficulty
+	-- HitpointsValue.Value = difficultyConfig.Hitpoints
 end
 
 function Module.GetActiveDifficultyConfig() : { }
@@ -76,7 +77,7 @@ function Module.Start()
 		Module.SetupGameFromConfig({ Difficulty = 'Normal', })
 		SystemsContainer.WavesServer.IterateWaves()
 		SystemsContainer.EnemiesServer.ClearSpawnQueue()
-		SystemsContainer.EnemiesServer.AwaitForEnemyDeaths()
+		SystemsContainer.EnemiesServer.KillAllEnemies()
 		if HitpointsValue.Value <= 0 then
 			-- dead
 			warn('You have died - game over!')

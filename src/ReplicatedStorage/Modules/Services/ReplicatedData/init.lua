@@ -241,12 +241,14 @@ else
 	end
 
 	function Module.Start()
-		-- keep requesting until data is available
+
+		--[[-- keep requesting until data is available
 		while not Module.GetData('PlayerData') do
 			print('requesting data from server')
 			Bridge:FireServer()
 			task.wait(2)
-		end
+		end]]
+
 	end
 
 end

@@ -2,13 +2,6 @@
 	"name": "tower-defense",
 	"tree": {
 		"$className": "DataModel",
-		"Players": {
-			"$className" : "Players",
-			"$properties": {
-				"RespawnTime" : 0,
-				"CharacterAutoLoads": false
-			}
-		},
 		"ReplicatedFirst": {
 			"$ignoreUnknownInstances": true,
 			"$path": "src/ReplicatedFirst"
@@ -38,7 +31,7 @@
 			"$ignoreUnknownInstances": true,
 			"$properties": {
 				"CharacterWalkSpeed" : 32,
-				"LoadCharacterAppearance" : false,
+				"LoadCharacterAppearance" : true,
 				"EnableMouseLockOption" : false
 			},
 			"StarterPlayerScripts": {
