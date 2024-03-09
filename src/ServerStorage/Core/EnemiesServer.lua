@@ -135,7 +135,7 @@ function Module.CreateEnemyAt( enemyId, spawnId )
 
 	EnemyMaid:Give(function()
 		CollectionService:RemoveTag(EnemyNPC, 'EnemyNPC')
-	end, EnemyNPC)
+	end)
 
 	local Data : Enemy = {
 		UUID = UniqueId,
@@ -187,15 +187,6 @@ function Module.UpdateEnemy( enemyData : Enemy )
 		return
 	end
 
-	-- look towards the next waypoint if available
-	--[[local nextWaypoint : BasePart = enemyData.PathPoints[enemyData.TargetPathIndex + 1]
-	if nextWaypoint then
-		local P0 : Vector3 = enemyData.PathPoints[enemyData.TargetPathIndex].Position
-		local P1 : Vector3 = nextWaypoint.Position
-		local RootCFrame : CFrame = CFrame.lookAt( P0, Vector3.new(P1.X, P0.Y, P1.Z) ) -- look towards the second node.
-		enemyData.Model:PivotTo(RootCFrame)
-	end]]
-
 	-- increment target index by 1
 	enemyData.TargetPathIndex += 1
 end
@@ -206,8 +197,9 @@ function Module.UpdateEnemies( _ : number )
 		local data = Module.ActiveEnemyUnits[index]
 		-- check if unit is destroyed
 		if data.Destroyed then
-			table.remove(Module.ActiveEnemyUnits, index)
 			data._Maid:Cleanup()
+			data.Model:Destroy()
+			table.remove(Module.ActiveEnemyUnits, index)
 			continue
 		end
 		-- check if unit is updating already
