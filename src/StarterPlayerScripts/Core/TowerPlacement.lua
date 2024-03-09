@@ -1,16 +1,19 @@
 
 local RunService = game:GetService('RunService')
+local UserInputService = game:GetService('UserInputService')
 
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 local LocalMouse = LocalPlayer:GetMouse()
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local UserInputService = game:GetService('UserInputService')
 local ReplicatedAssets = ReplicatedStorage:WaitForChild('Assets')
 
 local ReplicatedModules = require(ReplicatedStorage:WaitForChild("Modules"))
 local TowersConfigModule = ReplicatedModules.Data.Towers
+
+local RNetModule = ReplicatedModules.Libraries.RNet
+local TowerPlacementBridge = RNetModule.Create('TowerPlacement')
 
 local SystemsContainer = {}
 
@@ -29,6 +32,7 @@ local Module = {}
 
 Module.CurrentPlacementId = nil
 Module.CurrentPlacementModel = nil
+Module.CurrentPlacementCFrame = nil
 
 function Module.StopPlacement()
 	-- destroy old model
@@ -104,15 +108,15 @@ function Module.UpdateCurrentlyPlacing( _ : number )
 
 	raycastParams.FilterDescendantsInstances = { workspace.Map }
 
-	local mouseRay = CurrentCamera:ScreenPointToRay( LocalMouse.X, LocalMouse.Y )
-	local rayResult = workspace:Raycast( mouseRay.Origin, mouseRay.Direction * 100, raycastParams )
+	local mouseRay : Ray = CurrentCamera:ScreenPointToRay( LocalMouse.X, LocalMouse.Y )
+	local rayResult : RaycastParams = workspace:Raycast( mouseRay.Origin, mouseRay.Direction * 100, raycastParams )
 	if rayResult then
-		local MouseCFrame = CFrame.new(rayResult.Position)
+		local MouseCFrame : CFrame = CFrame.new(rayResult.Position)
 		local _, Size = Module.CurrentPlacementModel:GetBoundingBox()
 		InnerRangeAdornment.CFrame = MouseCFrame * CFrame.Angles( math.rad(90), 0, 0 )
 		OuterRangeAdornment.CFrame = InnerRangeAdornment.CFrame
 
-		local ModelCFrame = MouseCFrame * CFrame.new(0, Size.Y/2, 0)
+		local ModelCFrame : CFrame = MouseCFrame * CFrame.new(0, Size.Y/2, 0)
 		Module.CurrentPlacementModel:PivotTo( ModelCFrame )
 
 		overlapParams.FilterDescendantsInstances = { workspace.Map }
@@ -120,13 +124,15 @@ function Module.UpdateCurrentlyPlacing( _ : number )
 		local mapModel : Model = workspace.Map:GetChildren()[1]
 		local collisionParts : {BasePart} = workspace:GetPartBoundsInBox( ModelCFrame, Size, overlapParams )
 
-		local isColliding : boolean = #collisionParts > 1 or ( #collisionParts == 1 and not table.find( collisionParts, mapModel.Base ) )
+		local isColliding : boolean = (#collisionParts > 1) or ( #collisionParts == 1 and not table.find( collisionParts, mapModel.Base ) )
+		Module.CurrentPlacementColliding = isColliding
 		if isColliding then
 			InnerRangeAdornment.Color3 = Color3.fromRGB(151, 6, 6)
 			OuterRangeAdornment.Color3 = Color3.fromRGB(55, 3, 3)
 		else
 			InnerRangeAdornment.Color3 = Color3.fromRGB(13, 105, 172)
 			OuterRangeAdornment.Color3 = Color3.fromRGB(7, 58, 94)
+			Module.CurrentPlacementCFrame = ModelCFrame
 		end
 	end
 end
@@ -138,6 +144,12 @@ function Module.Start()
 	UserInputService.InputBegan:Connect(function(inputObject, _)
 		if inputObject.KeyCode == Enum.KeyCode.Q then
 			Module.StopPlacement()
+		elseif inputObject.UserInputType == Enum.UserInputType.MouseButton1 then
+			if Module.CurrentPlacementId and Module.CurrentPlacementCFrame and not Module.CurrentPlacementColliding then
+				local Position : Vector3 = Module.CurrentPlacementCFrame.Position
+				-- print( Module.CurrentPlacementId, Position )
+				TowerPlacementBridge:FireServer( Module.CurrentPlacementId, Position.X, Position.Y, Position.Z )
+			end
 		end
 	end)
 
@@ -173,7 +185,6 @@ function Module.Init(otherSystems)
 	InnerRangeAdornment.Visible = false
 	OuterRangeAdornment.Adornee = Terrain
 	OuterRangeAdornment.Parent = Terrain
-
 end
 
 return Module

@@ -2,6 +2,9 @@
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 
+local leaderstats = LocalPlayer:WaitForChild('leaderstats')
+local CashValue = leaderstats:WaitForChild('Cash')
+
 local Interface = LocalPlayer:WaitForChild('PlayerGui'):WaitForChild('Interface')
 local TopFrame = Interface:WaitForChild('TopFrame')
 
@@ -27,10 +30,14 @@ function Module.OpenWidget()
 	end
 	Module.IsOpen = true
 
-	TopFrame.Visible = true
 	TopFrame.WaveNumber.Text = string.format('Wave: %s/%s', tostring(CurrentWaveValue.Value), tostring(TotalWavesValue.Value))
 	TopFrame.TimerValue.Text = TimerValue.Value
 	TopFrame.Hitpoints.Text = 'Hitpoints: '..tostring(HitpointsValue.Value)
+	TopFrame.Currency.Text = 'Cash: ' .. tostring(CashValue.Value)
+
+	Module.WidgetMaid:Give(CashValue.Changed:Connect(function()
+		TopFrame.Currency.Text = 'Cash: ' .. tostring(CashValue.Value)
+	end))
 
 	Module.WidgetMaid:Give(HitpointsValue.Changed:Connect(function()
 		TopFrame.Hitpoints.Text = 'Hitpoints: '..tostring(HitpointsValue.Value)
@@ -47,6 +54,8 @@ function Module.OpenWidget()
 	Module.WidgetMaid:Give(TimerValue.Changed:Connect(function()
 		TopFrame.TimerValue.Text = TimerValue.Value
 	end))
+
+	TopFrame.Visible = true
 end
 
 function Module.CloseWidget()
