@@ -6,7 +6,7 @@ local LocalPlayer = Players.LocalPlayer
 local LocalAssets = LocalPlayer:WaitForChild('PlayerScripts'):WaitForChild('Assets')
 
 local Interface = LocalPlayer:WaitForChild('PlayerGui'):WaitForChild('Interface')
-local InventoryScroll = Interface:WaitForChild('InventoryFrame').Container.Weapons.Items
+local TowerSelectFrame = Interface:WaitForChild('TowerFrame')
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ReplicatedModules = require(ReplicatedStorage:WaitForChild("Modules"))

@@ -165,9 +165,8 @@ function Module.UpdateEnemy( enemyData : Enemy )
 	local enemyConfig = EnemiesConfigModule.GetConfigFromId( enemyData.ID )
 	if enemyData.TargetPathIndex > #enemyData.PathPoints then
 		enemyData.Destroyed = true
-		-- TODO: decrement global hitpoints
-		SystemsContainer.GameControllerServer.DecrementHitpoints( enemyConfig.Hitpoints )
-		warn('Enemy has reached the end! Decrement hitpoints.')
+		SystemsContainer.GameControllerServer.DecrementHitpoints( enemyConfig.Damage or 1 )
+		-- warn('Enemy has reached the end! Decrement hitpoints.')
 	end
 
 	-- move to the next target node
@@ -245,6 +244,16 @@ function Module.SpawnQueueUpdate()
 	end
 end
 
+function Module.AwaitForEnemyDeaths()
+	while #Module.ActiveEnemyUnits > 0 do
+		task.wait(0.1)
+	end
+end
+
+function Module.ClearSpawnQueue()
+	Module.SpawnQueue = {}
+end
+
 function Module.Start()
 
 	workspace.ChildAdded:Connect(function(child)
@@ -252,11 +261,6 @@ function Module.Start()
 		if TargetPlayer then
 			SetCharacterCollisionGroup( child, 'PlayerCharacters' )
 		end
-	end)
-
-	task.delay(2, function()
-		print('Starting custom debug spawning')
-		Module.QueueSpawnEnemies('DefaultRig', 'Path0', 30, 0.2)
 	end)
 
 	RunService.Heartbeat:Connect(Module.UpdateEnemies)

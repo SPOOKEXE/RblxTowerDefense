@@ -2,6 +2,8 @@
 -- start the waves and give players money after they've joined
 
 local HttpService = game:GetService("HttpService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
 local ServerStorage = game:GetService("ServerStorage")
 local ServerModules = require(ServerStorage:WaitForChild("Modules"))
 
@@ -9,6 +11,23 @@ local DifficultyConfigModule = ServerModules.Data.DifficultyConfig
 local GameConfigModule = ServerModules.Data.GameConfig
 
 local SystemsContainer = {}
+
+local HitpointsValue = Instance.new('IntValue')
+HitpointsValue.Name = 'Hitpoints'
+HitpointsValue.Value = 1
+HitpointsValue.Parent = ReplicatedStorage
+local CurrentWaveValue = Instance.new('IntValue')
+CurrentWaveValue.Name = 'CurrentWave'
+CurrentWaveValue.Value = 0
+CurrentWaveValue.Parent = ReplicatedStorage
+local TotalWavesValue = Instance.new('IntValue')
+TotalWavesValue.Name = 'TotalWaves'
+TotalWavesValue.Value = 1
+TotalWavesValue.Parent = ReplicatedStorage
+local TimerValue = Instance.new('StringValue')
+TimerValue.Name = 'TimerValue'
+TimerValue.Value = 'Loading Game'
+TimerValue.Parent = ReplicatedStorage
 
 -- // Module // --
 local Module = {}
@@ -34,20 +53,38 @@ function Module.GetActiveDifficultyConfig() : { }
 end
 
 function Module.DecrementHitpoints( amount : number )
-	print('Decrement Global Hitpoints: ', amount)
+	if HitpointsValue.Value <= 0 then
+		HitpointsValue.Value = 0
+	else
+		HitpointsValue.Value -= amount
+	end
+end
+
+function Module.IsGameOver() : boolean
+	return HitpointsValue.Value <= 0
 end
 
 function Module.SetupGameFromConfig( config : { Difficulty : string } )
-	warn( 'Loading game config: ' .. HttpService:JSONEncode(config) )
+	warn( 'Loading Game Config: ' .. HttpService:JSONEncode(config) )
 	Module.SetActiveDifficulty( config.Difficulty )
 	Module.Ready = true
 end
 
 function Module.Start()
 
-	Module.SetupGameFromConfig({
-		Difficulty = 'Normal',
-	})
+	task.spawn(function()
+		Module.SetupGameFromConfig({ Difficulty = 'Normal', })
+		SystemsContainer.WavesServer.IterateWaves()
+		SystemsContainer.EnemiesServer.ClearSpawnQueue()
+		SystemsContainer.EnemiesServer.AwaitForEnemyDeaths()
+		if HitpointsValue.Value <= 0 then
+			-- dead
+			warn('You have died - game over!')
+		else
+			-- alive
+			warn('You have won - game over!')
+		end
+	end)
 
 end
 
