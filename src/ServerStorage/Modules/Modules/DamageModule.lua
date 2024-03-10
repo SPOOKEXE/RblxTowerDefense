@@ -34,17 +34,15 @@ function Module.TagHumanoidTemporary( Humanoid, Value, Duration )
 	ObjValue:SetAttribute('Expiry', time() + Duration)
 end
 
---[[
-	function Module.GetHumanoidTagOwners( Humanoid )
-		local TagOwners = { }
-		for _, ObjValue in ipairs( Humanoid:GetChildren() ) do
-			if ObjValue:IsA("ObjectValue") then
-				table.insert( TagOwners, ObjValue.Value )
-			end
+function Module.GetHumanoidTagOwners( Humanoid : Humanoid ) : { Instance }
+	local TagOwners = { }
+	for _, ObjValue in ipairs( Humanoid:GetChildren() ) do
+		if ObjValue:IsA("ObjectValue") then
+			table.insert( TagOwners, ObjValue.Value )
 		end
-		return TagOwners
 	end
-]]
+	return TagOwners
+end
 
 function Module.GetHumanoidTags( Humanoid )
 	local TagValues = { }

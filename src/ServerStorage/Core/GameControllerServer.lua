@@ -53,6 +53,10 @@ function Module.GetActiveDifficultyConfig() : { }
 	return DifficultyConfigModule.GetConfigFromId( Module.DifficultyId )
 end
 
+function Module.IncrementHitpoints( amount : number )
+	HitpointsValue.Value += amount
+end
+
 function Module.DecrementHitpoints( amount : number )
 	if HitpointsValue.Value <= 0 then
 		HitpointsValue.Value = 0

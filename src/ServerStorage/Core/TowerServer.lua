@@ -4,8 +4,16 @@
 local RunService = game:GetService("RunService")
 local CollectionService = game:GetService('CollectionService')
 
+local ServerStorage = game:GetService("ServerStorage")
+local ServerModules = require(ServerStorage:WaitForChild("Modules"))
+
+local DamageModule = ServerModules.Modules.DamageModule
+
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ReplicatedModules = require(ReplicatedStorage:WaitForChild("Modules"))
+
+local RNetModule = ReplicatedModules.Libraries.RNet
+local TowerVFXBridge = RNetModule.Create('TowerVFX')
 
 local TowersConfigModule = ReplicatedModules.Data.Towers
 
@@ -23,12 +31,6 @@ local SystemsContainer = {}
 
 local ActiveTowerInstances : {Tower} = {}
 
-local function IsPointInCircle( center : Vector2, radius : number, point : Vector2 ) : boolean
-	local dx : number = (point.X - center.X)
-	local dy : number = (point.Y - center.Y)
-	return (dx * dx) + (dy * dy) < (radius * radius)
-end
-
 local function FindClosestEnemyToPosition( position : Vector3, range : number ) : ( Instance?, number? )
 	local closest = nil
 	local closestDistance = nil
@@ -39,7 +41,7 @@ local function FindClosestEnemyToPosition( position : Vector3, range : number ) 
 		end
 		local myPosition : Vector3 = model:GetPivot().Position
 		local dist = (myPosition - position).Magnitude
-		if (closestDistance and dist > closestDistance) or (closestDistance > range) then
+		if (closestDistance and dist > closestDistance) or (dist > range) then
 			continue
 		end
 		closest = model
@@ -79,32 +81,37 @@ function Module.UpdateTower( towerData : Tower )
 	local towerConfig = TowersConfigModule.GetConfigFromId( towerData.ID )
 	local upgradeData = towerConfig.Upgrades[ towerData.Level ]
 
-	local ClosestEnemy, _ = FindClosestEnemyToPosition( towerData.Model:GetPivot().Position, upgradeData.Range )
-	if not ClosestEnemy then
+	local closestEnemy, _ = FindClosestEnemyToPosition( towerData.Model:GetPivot().Position, upgradeData.Range )
+	if not closestEnemy then
 		return
 	end
 
-	local deltaPosition : Vector3 = (ClosestEnemy:GetPivot().Position - towerData.Model:GetPivot().Position)
-	if not IsPointInCircle( Vector2.new(), upgradeData.Range, Vector2.new( deltaPosition.X, deltaPosition.Z)  ) then
+	local Humanoid = closestEnemy:FindFirstChildWhichIsA('Humanoid')
+	if not Humanoid then
 		return
 	end
 
 	-- attack
-	if towerData.NextAttackTick < tick() then
+	if tick() < towerData.NextAttackTick then
 		return
 	end
 	towerData.NextAttackTick = tick() + upgradeData.AttackInterval
 
-	print( towerData.Model, towerData.ID, towerData.AttackIndex )
-	-- TowerVFXBridge:FireAllClients( towerData.Model, towerData.ID, towerData.AttackIndex )
+	-- print( towerData.ID, upgradeData.VFXAttackIDs[towerData.AttackIndex], towerData.Model:GetFullName() )
+	TowerVFXBridge:FireAllClients( towerData.Model, upgradeData.VFXAttackIDs[towerData.AttackIndex], closestEnemy, upgradeData.AttackInterval )
 
 	towerData.AttackIndex += 1
-	if towerData.AttackIndex > #towerConfig.VFXAttackIDs then
+	if towerData.AttackIndex > #upgradeData.VFXAttackIDs then
 		towerData.AttackIndex = 1
 	end
 
 	task.delay(0.4, function()
-		ClosestEnemy.Humanoid.Health -= towerConfig.Damage
+		if Humanoid.Health > 0 then
+			if towerData.Owner then
+				DamageModule.TagHumanoid( Humanoid, towerData.Owner )
+			end
+			Humanoid.Health -= upgradeData.Damage
+		end
 	end)
 
 end

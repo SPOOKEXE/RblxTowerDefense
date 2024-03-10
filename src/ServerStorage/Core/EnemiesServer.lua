@@ -26,6 +26,11 @@ local HttpService = game:GetService("HttpService")
 local Players = game:GetService('Players')
 local RunService = game:GetService("RunService")
 
+local ServerStorage = game:GetService("ServerStorage")
+local ServerModules = require(ServerStorage:WaitForChild("Modules"))
+
+local DamageModule = ServerModules.Modules.DamageModule
+
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ReplicatedAssets = ReplicatedStorage:WaitForChild('Assets')
 local ReplicatedModules = require(ReplicatedStorage:WaitForChild("Modules"))
@@ -151,6 +156,12 @@ function Module.CreateEnemyAt( enemyId, spawnId )
 	}
 
 	EnemyMaid:Give(EnemyNPC.Humanoid.Died:Connect(function()
+		local OwnerTags = DamageModule.GetHumanoidTagOwners( EnemyNPC.Humanoid )
+		for _, Owner in ipairs( OwnerTags ) do
+			Owner.leaderstats['Total Kills'].Value += 1
+			Owner.leaderstats.Cash.Value += enemyConfig.CurrencyDrop
+			SystemsContainer.GameControllerServer.IncrementHitpoints( enemyConfig.HitpointsDrop )
+		end
 		Data.Destroyed = true
 	end))
 
