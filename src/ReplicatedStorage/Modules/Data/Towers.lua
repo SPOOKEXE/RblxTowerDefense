@@ -31,23 +31,23 @@ Module.Towers = {
 
 		Upgrades = {
 			{ -- first index is the default
-				Damage = 5,
-				AttackInterval = 1.5,
-				Range = 5,
+				Damage = 2,
+				AttackInterval = 1.1,
+				Range = 6,
 				Cost = 0,
 				VFXAttackIDs = { 'Wizard_Attack1', },
 			},
 			{
-				Damage = 10,
-				AttackInterval = 1.2,
-				Range = 7,
+				Damage = 5,
+				AttackInterval = 1,
+				Range = 8,
 				Cost = 100,
 				VFXAttackIDs = { 'Wizard_Attack1', 'Wizard_Attack2', },
 			},
 			{
-				Damage = 20,
+				Damage = 10,
 				AttackInterval = 0.9,
-				Range = 9,
+				Range = 10,
 				Cost = 250,
 				VFXAttackIDs = { 'Wizard_Attack1', 'Wizard_Attack2', 'Wizard_Attack3', },
 			},

@@ -119,7 +119,7 @@ function Module.UpdateCurrentlyPlacing( _ : number )
 		local ModelCFrame : CFrame = MouseCFrame * CFrame.new(0, Size.Y/2, 0)
 		Module.CurrentPlacementModel:PivotTo( ModelCFrame )
 
-		overlapParams.FilterDescendantsInstances = { workspace.Map }
+		overlapParams.FilterDescendantsInstances = { workspace.Map, workspace.Towers }
 
 		local mapModel : Model = workspace.Map:GetChildren()[1]
 		local collisionParts : {BasePart} = workspace:GetPartBoundsInBox( ModelCFrame, Size, overlapParams )

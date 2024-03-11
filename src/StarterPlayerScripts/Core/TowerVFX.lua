@@ -43,7 +43,7 @@ Module.VFXAttacks = {
 		end)
 
 		local dist = (target:GetPivot().Position - Orb1.WorldCFrame.Position).Magnitude
-		while target:IsDescendantOf(workspace) and dist > 0.5 do
+		while target:IsDescendantOf(workspace) and dist > 0.7 do
 			task.wait()
 			dist = (target:GetPivot().Position - Orb1.WorldCFrame.Position).Magnitude
 		end
@@ -55,11 +55,55 @@ Module.VFXAttacks = {
 	end,
 
 	Wizard_Attack2 = function( model : Model, humanoid : Humanoid, target : Instance, duration : number )
+		local LoadedAnimation = humanoid.Animator:LoadAnimation( AnimationMatrix.Wizard.Attack )
+		LoadedAnimation:Play()
 
+		local Orb2 : Attachment = ReplicatedAssets.VFX.WizardAttack2.Attachment0:Clone()
+		Orb2.WorldCFrame = model.RightHand.CFrame
+		Orb2.Parent = workspace.Terrain
+
+		local conn; conn = RunService.Heartbeat:Connect(function(dt : number)
+			local _, Size = model:GetBoundingBox()
+			local Dir : Vector3 = CFrame.lookAt( Orb2.WorldCFrame.Position, (target:GetPivot()* CFrame.new(0, Size.Y/2, 0)).Position ).LookVector
+			Orb2.WorldCFrame = Orb2.CFrame + (Dir * 13 * dt) -- n is the projectile speed
+		end)
+
+		local dist = (target:GetPivot().Position - Orb2.WorldCFrame.Position).Magnitude
+		while target:IsDescendantOf(workspace) and dist > 0.5 do
+			task.wait()
+			dist = (target:GetPivot().Position - Orb2.WorldCFrame.Position).Magnitude
+		end
+
+		conn:Disconnect()
+		Orb2:Destroy()
+
+		-- TODO: blast effect
 	end,
 
 	Wizard_Attack3 = function( model : Model, humanoid : Humanoid, target : Instance, duration : number )
+		local LoadedAnimation = humanoid.Animator:LoadAnimation( AnimationMatrix.Wizard.Attack )
+		LoadedAnimation:Play()
 
+		local Orb3 : Attachment = ReplicatedAssets.VFX.WizardAttack3.Attachment0:Clone()
+		Orb3.WorldCFrame = model.RightHand.CFrame
+		Orb3.Parent = workspace.Terrain
+
+		local conn; conn = RunService.Heartbeat:Connect(function(dt : number)
+			local _, Size = model:GetBoundingBox()
+			local Dir : Vector3 = CFrame.lookAt( Orb3.WorldCFrame.Position, (target:GetPivot()* CFrame.new(0, Size.Y/2, 0)).Position ).LookVector
+			Orb3.WorldCFrame = Orb3.CFrame + (Dir * 13 * dt) -- n is the projectile speed
+		end)
+
+		local dist = (target:GetPivot().Position - Orb3.WorldCFrame.Position).Magnitude
+		while target:IsDescendantOf(workspace) and dist > 0.5 do
+			task.wait()
+			dist = (target:GetPivot().Position - Orb3.WorldCFrame.Position).Magnitude
+		end
+
+		conn:Disconnect()
+		Orb3:Destroy()
+
+		-- TODO: blast effect
 	end,
 
 } :: { [string] : VFXFunction }

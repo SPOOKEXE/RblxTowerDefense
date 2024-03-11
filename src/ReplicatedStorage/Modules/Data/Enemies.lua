@@ -16,16 +16,64 @@ local Module = {}
 
 Module.Enemies = {
 
-	DefaultRig = {
+	DefaultRig1 = {
 		Model = 'TemplateRig',
-		MaxHealth = 5,
-		WalkSpeed = 16,
+		MaxHealth = 2,
+		WalkSpeed = 9,
+
+		Damage = 1,
+		CurrencyDrop = 1,
+		HitpointsDrop = 0,
+
+		ModelScale = 0.5,
+	},
+
+	DefaultRig2 = {
+		Model = 'TemplateRig',
+		MaxHealth = 4,
+		WalkSpeed = 9,
 
 		Damage = 1,
 		CurrencyDrop = 2,
 		HitpointsDrop = 0,
 
 		ModelScale = 0.5,
+	},
+
+	DefaultRig3 = {
+		Model = 'TemplateRig',
+		MaxHealth = 6,
+		WalkSpeed = 10,
+
+		Damage = 1,
+		CurrencyDrop = 2,
+		HitpointsDrop = 0,
+
+		ModelScale = 0.5,
+	},
+
+	DefaultRig4 = {
+		Model = 'TemplateRig',
+		MaxHealth = 8,
+		WalkSpeed = 10,
+
+		Damage = 1,
+		CurrencyDrop = 2,
+		HitpointsDrop = 0,
+
+		ModelScale = 0.5,
+	},
+
+	DefaultBoss = {
+		Model = 'TemplateBoss',
+		MaxHealth = 12,
+		WalkSpeed = 11,
+
+		Damage = 10,
+		CurrencyDrop = 10,
+		HitpointsDrop = 0,
+
+		ModelScale = 0.7,
 	},
 
 }

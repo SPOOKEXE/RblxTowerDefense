@@ -22,7 +22,8 @@ local function IsDataCompleted( Data )
 	end
 
 	-- is close enough (on the horziontal plane, excluding Y value), success = true
-	local Dist = (Data.HumanoidRootPart:GetPivot().Position - Data.Position).Magnitude
+	local CurrentPosition = Data.HumanoidRootPart:GetPivot().Position
+	local Dist = ( Vector2.new( CurrentPosition.X, CurrentPosition.Z ) - Vector2.new( Data.Position.X, Data.Position.Z ) ).Magnitude
 	if Dist <= GOAL_DISTANCE_THRESHOLD then
 		Data.Success = true
 		Data.Reason = 3

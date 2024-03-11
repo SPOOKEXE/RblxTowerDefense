@@ -37,7 +37,7 @@ function Module.AttemptTowerPlacement( LocalPlayer : Player, towerId : string, p
 	local mapModel : Model = workspace.Map:GetChildren()[1]
 
 	raycastParams.FilterDescendantsInstances = { mapModel.Base }
-	overlapParams.FilterDescendantsInstances = { workspace.Map }
+	overlapParams.FilterDescendantsInstances = { workspace.Map, workspace.Towers }
 
 	local verticalRaycast = workspace:Raycast(placementPosition + Vector3.new(0, 5, 0), Vector3.new(0, -20, 0), raycastParams)
 	if not verticalRaycast then
@@ -61,9 +61,17 @@ function Module.AttemptTowerPlacement( LocalPlayer : Player, towerId : string, p
 	end
 
 	towerModel:PivotTo( ModelCFrame )
-	towerModel.Parent = workspace
+	towerModel.Parent = workspace.Towers
 
 	SystemsContainer.TowerServer.SetupTowerModel( towerModel, towerId, LocalPlayer )
+end
+
+function Module.AttemptTowerUpgrade( LocalPlayer : Player, towerUUID : string )
+
+end
+
+function Module.AttemptTowerSell( LocalPlayer : Player, towerUUID : string )
+
 end
 
 function Module.Start()

@@ -23,7 +23,7 @@ function Module.OnPlayerAdded( LocalPlayer : Player )
 
 	local CashValue = Instance.new('IntValue')
 	CashValue.Name = 'Cash'
-	CashValue.Value = 50000 -- 0
+	CashValue.Value = 50
 	CashValue.Parent = leaderstats
 
 end
