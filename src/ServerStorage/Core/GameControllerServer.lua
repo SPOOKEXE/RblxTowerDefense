@@ -69,9 +69,10 @@ function Module.IsGameOver() : boolean
 	return HitpointsValue.Value <= 0
 end
 
-function Module.SetupGameFromConfig( config : { Difficulty : string } )
+function Module.SetupGameFromConfig( config : { Difficulty : string, Map : string, } )
 	warn( 'Loading Game Config: ' .. HttpService:JSONEncode(config) )
 	Module.SetActiveDifficulty( config.Difficulty )
+	SystemsContainer.MapServer.LoadMap( config.Map )
 	Module.Ready = true
 end
 
@@ -91,7 +92,8 @@ end
 function Module.Start()
 
 	task.spawn(function()
-		Module.SetupGameFromConfig({ Difficulty = 'Normal', })
+		local StudioTest = { Difficulty = 'Normal', Map = 'Map1', }
+		Module.SetupGameFromConfig(StudioTest)
 		Module.RunGame()
 	end)
 

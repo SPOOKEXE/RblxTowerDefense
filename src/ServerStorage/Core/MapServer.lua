@@ -54,8 +54,6 @@ end
 
 function Module.Init(otherSystems)
 	SystemsContainer = otherSystems
-
-	Module.LoadMap( 'Map0' )
 end
 
 return Module

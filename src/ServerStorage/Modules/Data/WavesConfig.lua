@@ -249,11 +249,11 @@ Module.Waves = {
 			},
 		},
 		{ -- wave 20
-			Duration = 30,
+			Duration = 60,
 			Reward = 200,
 			Enemies = {
 				DefaultUltraBoss1 = {
-					Path0 = { Count = 29, Interval = 5, Offset = 0, }
+					Path0 = { Count = 60, Interval = 1, Offset = 0, }
 				},
 			},
 		},
