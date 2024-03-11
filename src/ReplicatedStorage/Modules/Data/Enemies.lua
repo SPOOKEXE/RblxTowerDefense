@@ -61,7 +61,7 @@ Module.Enemies = {
 		CurrencyDrop = 2,
 		HitpointsDrop = 0,
 
-		ModelScale = 0.5,
+		ModelScale = 0.4,
 	},
 
 	DefaultBoss = {
@@ -73,7 +73,19 @@ Module.Enemies = {
 		CurrencyDrop = 10,
 		HitpointsDrop = 0,
 
-		ModelScale = 0.7,
+		ModelScale = 0.6,
+	},
+
+	DefaultUltraBoss1 = {
+		Model = 'TemplateBoss',
+		MaxHealth = 76,
+		WalkSpeed = 10,
+
+		Damage = 50,
+		CurrencyDrop = 25,
+		HitpointsDrop = 0,
+
+		ModelScale = 0.8,
 	},
 
 }

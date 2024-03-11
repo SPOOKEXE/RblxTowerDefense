@@ -1,5 +1,6 @@
 -- handle inserting waves into queue using enemiesservice and configuration
 
+local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ReplicatedModules = require(ReplicatedStorage:WaitForChild("Modules"))
 
@@ -31,10 +32,12 @@ function Module.IterateWaves()
 		ReplicatedStorage.CurrentWave.Value = waveIndex
 		for enemyId : string, spawnDict : {} in pairs(waveData.Enemies) do
 			for spawnId : string, spawnData : {} in pairs(spawnDict) do
-				SystemsContainer.EnemiesServer.QueueSpawnEnemies( enemyId, spawnId, spawnData.Count, spawnData.Interval )
+				task.delay(spawnData.Delay or 0, function()
+					SystemsContainer.EnemiesServer.QueueSpawnEnemies( enemyId, spawnId, spawnData.Count, spawnData.Interval )
+				end)
 			end
 		end
-		for second = 0, waveData.Duration - 1 do
+		for second = 0, (waveData.Duration - 1) do
 			if SystemsContainer.GameControllerServer.IsGameOver() then
 				break
 			end
@@ -44,6 +47,10 @@ function Module.IterateWaves()
 		end
 		if SystemsContainer.GameControllerServer.IsGameOver() then
 			break
+		end
+		-- reward players for finishing the round
+		for _, LocalPlayer in ipairs( Players:GetPlayers() ) do
+			LocalPlayer.leaderstats.Cash.Value += (waveData.Reward or 25)
 		end
 	end
 
